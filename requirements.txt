@@ -1,0 +1,8 @@
+scapy>=2.5.0
+requests>=2.31.0
+python-nmap>=0.7.1
+mac-vendor-lookup>=0.1.12
+tqdm>=4.66.1
+colorama>=0.4.6
+texttable>=1.7.0
+argparse>=1.4.0
