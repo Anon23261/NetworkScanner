@@ -15,9 +15,14 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import texttable
 import textwrap
+from mac_vendor_lookup import MacLookup
+import nmap
+from scapy.all import ARP, Ether, srp
+from tqdm import tqdm
+import colorama
+from colorama import init, Fore, Style
 
 # Initialize colorama for cross-platform colored output
-from colorama import init, Fore, Style
 init()
 
 # Configure logging
@@ -278,11 +283,6 @@ def main():
     args = parse_arguments()
     
     try:
-        from mac_vendor_lookup import MacLookup
-        from scapy.all import ARP, Ether, srp
-        from tqdm import tqdm
-        from nmap import PortScanner
-        
         scanner = EnhancedNetworkScanner(
             target_network=args.network,
             stealth_level=args.stealth,
