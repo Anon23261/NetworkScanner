@@ -22,6 +22,8 @@ from tqdm import tqdm
 import colorama
 from colorama import init, Fore, Style
 import random
+import os
+import shutil
 
 # Initialize colorama for cross-platform colored output
 init()
@@ -297,6 +299,16 @@ def parse_arguments():
 
 def main():
     args = parse_arguments()
+
+    # Check for root privileges
+    if os.geteuid() != 0:
+        logging.error("This script must be run with root privileges.")
+        sys.exit(1)
+
+    # Check if nmap is installed
+    if not shutil.which("nmap"):
+        logging.error("nmap program was not found in path. Please install nmap and ensure it is in your PATH.")
+        sys.exit(1)
     
     try:
         scanner = EnhancedNetworkScanner(
