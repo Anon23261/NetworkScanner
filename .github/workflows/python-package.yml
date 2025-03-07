@@ -35,6 +35,8 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Install nmap
+      run: sudo apt-get install -y nmap
 
   lint:
     runs-on: ubuntu-latest
@@ -49,6 +51,8 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install nmap
+      run: sudo apt-get install -y nmap
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -69,6 +73,8 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install nmap
+      run: sudo apt-get install -y nmap
     - name: Test with pytest
       run: |
         pytest
