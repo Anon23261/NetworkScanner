@@ -15,9 +15,17 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import texttable
 import textwrap
+from mac_vendor_lookup import MacLookup
+import nmap
+from scapy.all import ARP, Ether, srp
+from tqdm import tqdm
+import colorama
+from colorama import init, Fore, Style
+import random
+import os
+import shutil
 
 # Initialize colorama for cross-platform colored output
-from colorama import init, Fore, Style
 init()
 
 # Configure logging
@@ -42,6 +50,7 @@ class NetworkDevice:
         self.response_time = 0.0
         self.services = {}
         self.is_gateway = False
+        self.vulnerabilities = []
 
 class EnhancedNetworkScanner:
     def __init__(self, target_network: str, stealth_level: int = 1, ports: List[int] = None):
@@ -78,7 +87,7 @@ class EnhancedNetworkScanner:
                 for line in result.stdout.split('\n'):
                     if "Default Gateway" in line:
                         gateway = line.split(":")[1].strip()
-                        if gateway and gateway != "":
+                        if gateway:
                             return gateway
             return None
         except Exception as e:
@@ -94,7 +103,7 @@ class EnhancedNetworkScanner:
             return False
 
     def adaptive_delay(self) -> float:
-        return self.base_delay * (1 + (self.stealth_level - 1) * 0.5)
+        return self.base_delay * (1 + (self.stealth_level - 1) * 0.5) + random.uniform(0.1, 0.5)
 
     def get_service_banner(self, ip: str, port: int) -> str:
         try:
@@ -104,6 +113,15 @@ class EnhancedNetworkScanner:
                 return s.recv(1024).decode('utf-8', errors='ignore').strip()
         except:
             return ""
+
+    def check_vulnerabilities(self, service: str) -> List[str]:
+        vulnerabilities = []
+        # Placeholder for vulnerability checking logic
+        # For example, you can use CVE databases or other sources to check for known vulnerabilities
+        # Here, we simulate with dummy data
+        if service in ["ftp", "ssh", "telnet", "http", "smb"]:
+            vulnerabilities.append(f"Vulnerable service detected: {service}")
+        return vulnerabilities
 
     def scan_device(self, device: NetworkDevice):
         nm = nmap.PortScanner()
@@ -129,6 +147,7 @@ class EnhancedNetworkScanner:
                             'banner': banner,
                             'response_time': scan_time
                         })
+                        device.vulnerabilities.extend(self.check_vulnerabilities(service))
                     time.sleep(self.adaptive_delay())
                 except Exception as e:
                     logging.debug(f"Port {port} scan failed for {device.ip}: {e}")
@@ -187,11 +206,12 @@ class EnhancedNetworkScanner:
         table = texttable.Texttable(max_width=100)
         table.set_deco(texttable.Texttable.HEADER | texttable.Texttable.VLINES)
         
-        headers = ["IP Address", "Hostname", "MAC Address", "Vendor", "OS", "Open Ports"]
+        headers = ["IP Address", "Hostname", "MAC Address", "Vendor", "OS", "Open Ports", "Vulnerabilities"]
         table.header(headers)
         
         for device in sorted(self.devices, key=lambda x: ipaddress.IPv4Address(x.ip)):
             ports_str = ", ".join([f"{p['port']}/{p['service']}" for p in device.open_ports[:3]])
+            vulns_str = "\n".join(device.vulnerabilities)
             if len(device.open_ports) > 3:
                 ports_str += f" (+{len(device.open_ports)-3} more)"
                 
@@ -201,7 +221,8 @@ class EnhancedNetworkScanner:
                 device.mac,
                 device.vendor[:20] + "..." if len(device.vendor) > 20 else device.vendor,
                 device.os[:20] + "..." if len(device.os) > 20 else device.os,
-                ports_str
+                ports_str,
+                vulns_str
             ]
             table.add_row(row)
 
@@ -224,7 +245,7 @@ class EnhancedNetworkScanner:
             with open(filename, mode='w', newline='', encoding='utf-8') as file:
                 writer = csv.DictWriter(file, fieldnames=[
                     "IP Address", "MAC Address", "Hostname", "Vendor", "OS", 
-                    "Open Ports", "Is Gateway", "Last Seen"
+                    "Open Ports", "Is Gateway", "Last Seen", "Vulnerabilities"
                 ])
                 writer.writeheader()
                 for device in self.devices:
@@ -236,7 +257,8 @@ class EnhancedNetworkScanner:
                         "OS": device.os,
                         "Open Ports": ', '.join([f"{p['port']}/{p['service']}" for p in device.open_ports]),
                         "Is Gateway": device.is_gateway,
-                        "Last Seen": device.last_seen.isoformat()
+                        "Last Seen": device.last_seen.isoformat(),
+                        "Vulnerabilities": '; '.join(device.vulnerabilities)
                     })
         else:  # JSON format
             filename = f"scan_results_{timestamp}.json"
@@ -249,7 +271,8 @@ class EnhancedNetworkScanner:
                     "os": d.os,
                     "open_ports": d.open_ports,
                     "is_gateway": d.is_gateway,
-                    "last_seen": d.last_seen.isoformat()
+                    "last_seen": d.last_seen.isoformat(),
+                    "vulnerabilities": d.vulnerabilities
                 } for d in self.devices], file, indent=2)
 
         print(f"\n{Fore.GREEN}Results saved to: {filename}{Style.RESET_ALL}")
@@ -267,22 +290,27 @@ def parse_arguments():
     )
     parser.add_argument('network', help='Target network (e.g., 192.168.1.0/24)')
     parser.add_argument('-s', '--stealth', type=int, choices=[1, 2, 3], default=1,
-                      help='Stealth level (1=normal, 2=stealthier, 3=stealthiest)')
+                        help='Stealth level (1=normal, 2=stealthier, 3=stealthiest)')
     parser.add_argument('-p', '--ports', type=int, nargs='+',
-                      help='Specific ports to scan (default: common ports)')
+                        help='Specific ports to scan (default: common ports)')
     parser.add_argument('-f', '--format', choices=['csv', 'json'], default='csv',
-                      help='Output format for results (default: csv)')
+                        help='Output format for results (default: csv)')
     return parser.parse_args()
 
 def main():
     args = parse_arguments()
+
+    # Check for root privileges
+    if os.geteuid() != 0:
+        logging.error("This script must be run with root privileges.")
+        sys.exit(1)
+
+    # Check if nmap is installed
+    if not shutil.which("nmap"):
+        logging.error("nmap program was not found in path. Please install nmap and ensure it is in your PATH.")
+        sys.exit(1)
     
     try:
-        from mac_vendor_lookup import MacLookup
-        from scapy.all import ARP, Ether, srp
-        from tqdm import tqdm
-        from nmap import PortScanner
-        
         scanner = EnhancedNetworkScanner(
             target_network=args.network,
             stealth_level=args.stealth,
@@ -301,4 +329,4 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    main() 
