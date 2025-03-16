@@ -24,6 +24,7 @@ from colorama import init, Fore, Style
 import random
 import os
 import shutil
+from cryptography.fernet import Fernet
 
 # Initialize colorama for cross-platform colored output
 init()
@@ -276,6 +277,27 @@ class EnhancedNetworkScanner:
                 } for d in self.devices], file, indent=2)
 
         print(f"\n{Fore.GREEN}Results saved to: {filename}{Style.RESET_ALL}")
+
+        # Encrypt the results file
+        self.encrypt_file(filename)
+
+    def encrypt_file(self, filename: str):
+        key = Fernet.generate_key()
+        cipher_suite = Fernet(key)
+        
+        with open(filename, 'rb') as file:
+            file_data = file.read()
+        
+        encrypted_data = cipher_suite.encrypt(file_data)
+        
+        with open(filename, 'wb') as file:
+            file.write(encrypted_data)
+        
+        key_filename = f"{filename}.key"
+        with open(key_filename, 'wb') as key_file:
+            key_file.write(key)
+        
+        print(f"\n{Fore.GREEN}Results encrypted. Encryption key saved to: {key_filename}{Style.RESET_ALL}")
 
 def parse_arguments():
     parser = argparse.ArgumentParser(

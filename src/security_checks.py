@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 import requests
 from concurrent.futures import ThreadPoolExecutor
 import nmap
+from src.scanner_logging import SecurityLogger
 
 class SecurityChecker:
     def __init__(self, logger):
