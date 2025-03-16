@@ -1,9 +1,6 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Python package
 
 on:
@@ -80,6 +77,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install nmap
       run: sudo apt-get install -y nmap
+    - name: Install pytest
+      run: python -m pip install pytest
     - name: Test with pytest
       run: |
         pytest
