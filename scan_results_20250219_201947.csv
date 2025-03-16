@@ -1,9 +1,1 @@
-IP Address,MAC Address,Hostname,Vendor,OS,Open Ports,Is Gateway,Last Seen
-192.168.0.1,d4:b9:2f:5b:06:dc,_gateway,Vantiva USA LLC,Unknown,,False,2025-02-19T20:19:47.110989
-192.168.0.22,d8:be:65:44:7b:fd,Unknown,Amazon Technologies Inc.,Unknown,,False,2025-02-19T20:19:47.290450
-192.168.0.96,10:ce:02:25:d0:9d,Unknown,Amazon Technologies Inc.,Unknown,,False,2025-02-19T20:19:47.301361
-192.168.0.130,5c:fb:3a:da:d3:83,Unknown,"CHONGQING FUGUI ELECTRONICS CO.,LTD.",Unknown,,False,2025-02-19T20:19:47.311597
-192.168.0.173,e8:38:a0:64:de:d5,Unknown,"Vizio, Inc",Unknown,,False,2025-02-19T20:19:47.319835
-192.168.0.150,48:b4:23:f4:5c:83,Unknown,Amazon Technologies Inc.,Unknown,,False,2025-02-19T20:19:47.328293
-192.168.0.244,84:ea:ed:53:84:9a,Unknown,"Roku, Inc",Unknown,,False,2025-02-19T20:19:47.334984
-192.168.0.205,40:ed:00:13:94:fb,Unknown,TP-Link Corporation Limited,Unknown,,False,2025-02-19T20:19:47.357526
+
