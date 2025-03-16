@@ -54,17 +54,17 @@ pip install -r requirements.txt
 
 1. Basic Network Scan:
 ```bash
-python network_scanner.py 192.168.1.0/24
+python src/network_scanner.py 192.168.1.0/24
 ```
 
 2. Advanced Scan with Custom Ports:
 ```bash
-python network_scanner.py 192.168.1.0/24 -s 2 -p 80 443 3389 8080
+python src/network_scanner.py 192.168.1.0/24 -s 2 -p 80 443 3389 8080
 ```
 
 3. Full Security Assessment:
 ```bash
-python network_scanner.py 192.168.1.0/24 --security-check --format json
+python src/network_scanner.py 192.168.1.0/24 --security-check --format json
 ```
 
 ### Command Line Arguments
