@@ -1,12 +1,1 @@
-2025-02-19 20:17:55,273 - INFO - Starting network scan of 192.168.0.0/24
-2025-02-19 20:17:55,273 - ERROR - Scan failed: [Errno 1] Operation not permitted
-2025-02-19 20:19:44,969 - INFO - Starting network scan of 192.168.0.0/24
-2025-02-19 20:19:47,365 - ERROR - Scan failed for 192.168.0.130: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,365 - ERROR - Scan failed for 192.168.0.96: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,367 - ERROR - Scan failed for 192.168.0.173: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,367 - ERROR - Scan failed for 192.168.0.150: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,367 - ERROR - Scan failed for 192.168.0.22: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,367 - ERROR - Scan failed for 192.168.0.1: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,369 - ERROR - Scan failed for 192.168.0.244: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:19:47,377 - ERROR - Scan failed for 192.168.0.205: 'nmap program was not found in path. PATH is : /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-2025-02-19 20:20:45,880 - INFO - Starting network scan of 192.168.0.0/24
+
